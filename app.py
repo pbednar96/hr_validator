@@ -7,10 +7,9 @@ from hr_validator import evaluate_candidate, DEFAULT_MODEL
 st.set_page_config(page_title="HR Validator", page_icon="🕵️‍♀️")
 st.title("🕵️‍♀️ HR Validator – Posouzení shody kandidáta 📄🔍")
 
-st.sidebar.header("🔧 Nastavení")
-model_name = st.sidebar.text_input("Model", value=DEFAULT_MODEL)
+model_name = "gpt-4o-mini"
 
-QUESTION_THRESHOLD = 60  # Zobrazit doplňující otázky jen pokud skóre ≥ threshold
+QUESTION_THRESHOLD = 60
 
 
 def get_pdf_text(uploaded_file) -> str:
