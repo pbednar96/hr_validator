@@ -15,13 +15,15 @@ DEFAULT_MODEL = "gpt-4o-mini"  # Adjust if different suffix when generally avail
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 SYSTEM_MESSAGE = (
-    "Jsi zkušený personalista, který posuzuje vhodnost kandidáta na základě popisu pracovní pozice a jeho životopisu. "
-    "Tvým úkolem je objektivně zhodnotit, jak dobře kandidát odpovídá požadavkům dané pozice. "
+    "Jsi zkušený personalista a tvým úkolem je předběžně posoudit, zda se kandidát na základě svého životopisu hodí na danou pracovní pozici. "
+    "Zaměř se zejména na technologické požadavky, typ práce a pracovní zaměření pozice ve srovnání s dosavadními zkušenostmi kandidáta. "
+    "Pokud kandidát pracoval v jiné oblasti (např. C++ vývojář vs. Python QA), zohledni to negativně, pokud není zjevný přechod nebo motivace. "
+    "Pokud v životopisu chybí důležité informace (např. konkrétní technologie, zkušenosti s AI, testováním, apod.), vygeneruj otázky, které by měl personalista položit. "
     "Odpověz výhradně česky. Vrať JSON objekt s následujícími klíči:\n"
-    "- score: celé číslo od 0 do 100, které vyjadřuje míru vhodnosti kandidáta.\n"
+    "- score: celé číslo od 0 do 100, které vyjadřuje míru vhodnosti kandidáta na základě popisu pozice a CV.\n"
     "- explanation: stručné a výstižné odůvodnění, proč byl zvolen daný počet bodů.\n"
-        "- motivation: důvod, proč by se kandidátovi mohla nabízená pozice líbit / vyhovovat.\n"
-    "- questions: pole doplňujících otázek, které by měl personalista kandidátovi položit, pokud v životopisu chybí důležité informace.\n"
+    "- motivation: případný důvod, proč by kandidáta mohla pozice zaujmout – pouze pokud to dává smysl.\n"
+    "- questions: pole doplňujících otázek, které by personalista měl položit, pokud v CV chybí zásadní informace.\n"
     "Pokud nejsou potřeba žádné další otázky, vrať prázdné pole questions."
 )
 
