@@ -1,18 +1,14 @@
 """Core utilities for HR Validator"""
-import os
 import json
 from typing import List, Dict, Any
 
 import pdfplumber
 import openai
 
-from dotenv import load_dotenv
 
-load_dotenv()
 
 DEFAULT_MODEL = "gpt-4o-mini"  # Adjust if different suffix when generally available
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 SYSTEM_MESSAGE = (
     "Jsi zkušený personalista a tvým úkolem je předběžně posoudit, zda se kandidát na základě svého životopisu hodí na danou pracovní pozici. "
@@ -48,7 +44,7 @@ def build_messages(job_description: str, cv_text: str) -> List[Dict[str, str]]:
 
 
 def _call_openai(messages: List[Dict[str, str]], model: str = DEFAULT_MODEL, openai_key: str | None = None) -> Dict[str, Any]:
-    openai.api_key = openai_key or os.getenv("OPENAI_API_KEY")
+    openai.api_key = openai_key
     response = openai.chat.completions.create(
         model=model,
         messages=messages,
@@ -57,6 +53,6 @@ def _call_openai(messages: List[Dict[str, str]], model: str = DEFAULT_MODEL, ope
     return json.loads(response.choices[0].message.content)
 
 
-def evaluate_candidate(job_description: str, cv_text: str, *, model: str = DEFAULT_MODEL) -> Dict[str, Any]:
+def evaluate_candidate(job_description: str, cv_text: str, *, model: str = DEFAULT_MODEL, openai_key: str = None) -> Dict[str, Any]:
     messages = build_messages(job_description, cv_text)
-    return _call_openai(messages, model=model, openai_key=OPENAI_API_KEY)
+    return _call_openai(messages, model=model, openai_key=openai_key)

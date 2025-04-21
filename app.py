@@ -9,6 +9,9 @@ st.title("🕵️‍♀️ HR Validator – Posouzení shody kandidáta 📄🔍
 
 model_name = "gpt-4o-mini"
 
+st.sidebar.header("🔧 Nastavení")
+openai_key = st.sidebar.text_input("OpenAI API klíč", type="password", value="")
+
 QUESTION_THRESHOLD = 60
 
 
@@ -33,7 +36,7 @@ if submit:
 
     cv_text = get_pdf_text(cv_file)
     with st.spinner("Analyzuji životopis…"):
-        result = evaluate_candidate(jd_text, cv_text, model=model_name)
+        result = evaluate_candidate(jd_text, cv_text, model=model_name, openai_key=openai_key)
     st.success("Hotovo!")
 
     score = result.get("score", 0)
