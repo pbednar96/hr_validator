@@ -62,11 +62,11 @@ if submit:
 
     if result.get("skill_tags"):
         st.subheader("🔖 Tags pro pozici")
-        st.markdown(", ".join(result["tags"]))
+        st.markdown(", ".join(result["skill_tags"]))
 
     if result.get("role_tags"):
         st.subheader("Podobne nazvy pozic")
-        st.markdown(", ".join(result["tags"]))
+        st.markdown(", ".join(result["role_tags"]))
 
     st.subheader("Vysvětlení hodnocení")
     st.markdown(result.get("explanation", "_Žádné vysvětlení._"))
