@@ -60,13 +60,9 @@ if submit:
     score = result.get("score", 0)
     st.metric("Skóre vhodnosti", f"{score} / 100")
 
-    if result.get("skill_tags"):
+    if result.get("tags"):
         st.subheader("🔖 Tags pro pozici")
-        st.markdown(", ".join(result["skill_tags"]))
-
-    if result.get("role_tags"):
-        st.subheader("Podobne nazvy pozic")
-        st.markdown(", ".join(result["role_tags"]))
+        st.markdown(", ".join(result["tags"]))
 
     st.subheader("Vysvětlení hodnocení")
     st.markdown(result.get("explanation", "_Žádné vysvětlení._"))
