@@ -1,4 +1,5 @@
 """Core utilities for HR Validator"""
+
 import json
 from typing import List, Dict, Any
 
@@ -6,21 +7,27 @@ import pdfplumber
 import openai
 
 
-
-DEFAULT_MODEL = "gpt-4o-mini"  # Adjust if different suffix when generally available
+DEFAULT_MODEL = "gpt-4.1-mini"  # Adjust if different suffix when generally available
 
 
 SYSTEM_MESSAGE = (
-    "Jsi zkušený personalista a tvým úkolem je předběžně posoudit, zda se kandidát na základě svého životopisu hodí na danou pracovní pozici. "
-    "Zaměř se zejména na technologické požadavky, typ práce a pracovní zaměření pozice ve srovnání s dosavadními zkušenostmi kandidáta. "
-    "Pokud kandidát pracoval v jiné oblasti (např. C++ vývojář vs. Python QA), zohledni to negativně, pokud není zjevný přechod nebo motivace. "
-    "Pokud v životopisu chybí důležité informace (např. konkrétní technologie, zkušenosti s AI, testováním, apod.), vygeneruj otázky, které by měl personalista položit. "
-    "Odpověz výhradně česky. Vrať JSON objekt s následujícími klíči:\n"
-    "- score: celé číslo od 0 do 100, které vyjadřuje míru vhodnosti kandidáta na základě popisu pozice a CV.\n"
-    "- explanation: stručné a výstižné odůvodnění, proč byl zvolen daný počet bodů.\n"
-    "- motivation: případný důvod, proč by kandidáta mohla pozice zaujmout – pouze pokud to dává smysl.\n"
-    "- questions: pole doplňujících otázek, které by personalista měl položit, pokud v CV chybí zásadní informace.\n"
-    "Pokud nejsou potřeba žádné další otázky, vrať prázdné pole questions."
+    "Jsi zkušený personalista a tvým úkolem je předběžně posoudit, zda se kandidát na základě svého "
+    "životopisu hodí na danou pracovní pozici napříč obory (např. technické profese, IT, účetnictví, "
+    "stavebnictví, energetika, výroba, administrativa aj.). "
+    "Soustřeď se zejména na:\n"
+    "• klíčové odborné požadavky a dovednosti (technické, soft-skills, legislativní či jazykové),\n"
+    "• typ práce a pracovní prostředí (kancelář, terén, výroba, projekční činnost, zákaznická podpora …),\n"
+    "• požadovanou úroveň praxe, vzdělání, certifikací nebo oprávnění (např. vyhláška 50/1978, ACCA, CAD licence, řidičské oprávnění atd.).\n"
+    "Pokud kandidát působil převážně v jiném oboru, zohledni to negativně, ledaže je patrná logická "
+    "motivace ke změně či přenositelné dovednosti. "
+    "Chybějí-li v CV zásadní údaje (např. konkrétní technologie, nástroje, projekty, objem zakázek, "
+    "odpovědnost za rozpočet, certifikace), vygeneruj doplňující otázky, které by personalista měl položit. "
+    "Odpověz výhradně česky. Vrať JSON objekt s těmito klíči:\n"
+    "- score: celé číslo 0–100 vyjadřující vhodnost kandidáta vůči pozici.\n"
+    "- explanation: stručné odůvodnění uděleného skóre.\n"
+    "- motivation: případný důvod, proč by pozice mohla kandidáta oslovit – uveď jen pokud dává smysl.\n"
+    "- questions: pole doplňujících otázek; pokud nejsou potřeba, vrať prázdné pole.\n"
+    "- tags: pole klíčových dovedností/technologií relevantních k pozici (např.['JAVA', 'MAVEN', 'GIT'])."
 )
 
 
@@ -34,16 +41,24 @@ def extract_text_from_pdf(pdf_path: str) -> str:
 def build_messages(job_description: str, cv_text: str) -> List[Dict[str, str]]:
     """Prepare chat messages for the OpenAI ChatCompletion call."""
     user_content = (
-        "<JOB_DESCRIPTION>\n" + job_description.strip() + "\n</JOB_DESCRIPTION>\n" +
-        "<RESUME>\n" + cv_text.strip() + "\n</RESUME>"
+        "<JOB_DESCRIPTION>\n"
+        + job_description.strip()
+        + "\n</JOB_DESCRIPTION>\n"
+        + "<RESUME>\n"
+        + cv_text.strip()
+        + "\n</RESUME>"
     )
     return [
         {"role": "system", "content": SYSTEM_MESSAGE},
-        {"role": "user", "content": user_content}
+        {"role": "user", "content": user_content},
     ]
 
 
-def _call_openai(messages: List[Dict[str, str]], model: str = DEFAULT_MODEL, openai_key: str | None = None) -> Dict[str, Any]:
+def _call_openai(
+    messages: List[Dict[str, str]],
+    model: str = DEFAULT_MODEL,
+    openai_key: str | None = None,
+) -> Dict[str, Any]:
     openai.api_key = openai_key
     response = openai.chat.completions.create(
         model=model,
@@ -53,6 +68,12 @@ def _call_openai(messages: List[Dict[str, str]], model: str = DEFAULT_MODEL, ope
     return json.loads(response.choices[0].message.content)
 
 
-def evaluate_candidate(job_description: str, cv_text: str, *, model: str = DEFAULT_MODEL, openai_key: str = None) -> Dict[str, Any]:
+def evaluate_candidate(
+    job_description: str,
+    cv_text: str,
+    *,
+    model: str = DEFAULT_MODEL,
+    openai_key: str = None
+) -> Dict[str, Any]:
     messages = build_messages(job_description, cv_text)
     return _call_openai(messages, model=model, openai_key=openai_key)

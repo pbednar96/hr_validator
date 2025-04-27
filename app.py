@@ -1,4 +1,5 @@
 """Streamlit UI for HR Validator"""
+
 import io
 import streamlit as st
 import pdfplumber
@@ -10,22 +11,37 @@ st.title("🕵️‍♀️ HR Validator – Posouzení shody kandidáta 📄🔍
 model_name = "gpt-4o-mini"
 
 st.sidebar.header("🔧 Nastavení")
-openai_key = st.sidebar.text_input("OpenAI API klíč", type="password", value="")
+openai_key = st.sidebar.text_input("OpenAI API key", type="password", value="")
 
 QUESTION_THRESHOLD = 60
 
 
-def get_pdf_text(uploaded_file) -> str:
-    """Read PDF bytes from Streamlit uploader and return extracted text."""
+def extract_text_as_markdown(uploaded_file) -> str:
     if not uploaded_file:
         return ""
+
+    markdown_lines: list[str] = []
     with pdfplumber.open(io.BytesIO(uploaded_file.read())) as pdf:
-        pages = [page.extract_text() or "" for page in pdf.pages]
-    return "\n".join(pages)
+        for page in pdf.pages:
+            text = page.extract_text() or ""
+            for line in text.split("\n"):
+                line = line.strip()
+                if not line:
+                    continue
+                if line.isupper():
+                    markdown_lines.append(f"## {line.title()}")
+                elif line.startswith("- ") or line.startswith("* "):
+                    markdown_lines.append(line)
+                else:
+                    markdown_lines.append(line)
+            markdown_lines.append("")
+    return "\n".join(markdown_lines)
 
 
 with st.form("hr_form"):
-    jd_text = st.text_area("Popis pozice", placeholder="Vložte popis pracovní pozice…", height=200)
+    jd_text = st.text_area(
+        "Popis pozice", placeholder="Vložte popis pracovní pozice…", height=200
+    )
     cv_file = st.file_uploader("Životopis kandidáta (PDF)", type=["pdf"])
     submit = st.form_submit_button("Vyhodnotit", type="primary")
 
@@ -34,13 +50,19 @@ if submit:
         st.warning("Prosím vložte popis pozice a CV v PDF.")
         st.stop()
 
-    cv_text = get_pdf_text(cv_file)
+    cv_text = extract_text_as_markdown(cv_file)
     with st.spinner("Analyzuji životopis…"):
-        result = evaluate_candidate(jd_text, cv_text, model=model_name, openai_key=openai_key)
+        result = evaluate_candidate(
+            jd_text, cv_text, model=model_name, openai_key=openai_key
+        )
     st.success("Hotovo!")
 
     score = result.get("score", 0)
     st.metric("Skóre vhodnosti", f"{score} / 100")
+
+    if result.get("tags"):
+        st.subheader("🔖 Tags pro pozici")
+        st.markdown(", ".join(result["tags"]))
 
     st.subheader("Vysvětlení hodnocení")
     st.markdown(result.get("explanation", "_Žádné vysvětlení._"))
