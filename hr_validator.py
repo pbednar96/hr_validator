@@ -27,7 +27,7 @@ SYSTEM_MESSAGE = (
     "- explanation: stručné odůvodnění uděleného skóre.\n"
     "- motivation: případný důvod, proč by pozice mohla kandidáta oslovit – uveď jen pokud dává smysl.\n"
     "- questions: pole doplňujících otázek; pokud nejsou potřeba, vrať prázdné pole.\n"
-    "- tags: pole klíčových dovedností/technologií relevantních k pozici (MAX 10 tagu)."
+    "- tags: pole klíčových dovedností a technologií přímo vyžadovaných pro danou pracovní pozici (MAX 10 tagů). Nepřidávej dovednosti kandidáta – tagy musí vycházet pouze z požadavků pozice."
     "Příklady:\n"
     "  • Java Developer → [\"JAVA\", \"SPRING\", \"GIT\", \"SOFTWARE ENGINEER\", \"BACK-END DEVELOPER\"]\n"
     "  • Účetní → [\"IFRS\", \"SAP\", \"MS EXCEL\", \"ACCOUNTANT\", \"FINANČNÍ ÚČETNÍ\"]\n"
