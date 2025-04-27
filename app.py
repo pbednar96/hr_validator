@@ -11,7 +11,7 @@ st.title("🕵️‍♀️ HR Validator – Posouzení shody kandidáta 📄🔍
 model_name = "gpt-4o-mini"
 
 st.sidebar.header("🔧 Nastavení")
-openai_key = st.sidebar.text_input("OpenAI API key:", type="password", value="")
+openai_key = st.sidebar.text_input("OpenAI-API key:", type="password", value="")
 
 QUESTION_THRESHOLD = 60
 
@@ -60,8 +60,12 @@ if submit:
     score = result.get("score", 0)
     st.metric("Skóre vhodnosti", f"{score} / 100")
 
-    if result.get("tags"):
+    if result.get("skill_tags"):
         st.subheader("🔖 Tags pro pozici")
+        st.markdown(", ".join(result["tags"]))
+
+    if result.get("role_tags"):
+        st.subheader("Podobne nazvy pozic")
         st.markdown(", ".join(result["tags"]))
 
     st.subheader("Vysvětlení hodnocení")
