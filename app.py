@@ -11,7 +11,7 @@ st.title("🕵️‍♀️ HR Validator – Posouzení shody kandidáta 📄🔍
 model_name = "gpt-4o-mini"
 
 st.sidebar.header("🔧 Nastavení")
-openai_key = st.sidebar.text_input("OpenAI API key", type="password", value="")
+openai_key = st.sidebar.text_input("OpenAI API key:", type="password", value="")
 
 QUESTION_THRESHOLD = 60
 

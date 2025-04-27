@@ -28,6 +28,12 @@ SYSTEM_MESSAGE = (
     "- motivation: případný důvod, proč by pozice mohla kandidáta oslovit – uveď jen pokud dává smysl.\n"
     "- questions: pole doplňujících otázek; pokud nejsou potřeba, vrať prázdné pole.\n"
     "- tags: pole klíčových dovedností/technologií relevantních k pozici (např.['JAVA', 'MAVEN', 'GIT'])."
+    "Příklady:\n"
+    "  • Java Developer → [\"JAVA\", \"SPRING\", \"GIT\", \"SOFTWARE ENGINEER\", \"BACK-END DEVELOPER\"]\n"
+    "  • Účetní → [\"IFRS\", \"SAP\", \"MS EXCEL\", \"ACCOUNTANT\", \"FINANČNÍ ÚČETNÍ\"]\n"
+    "  • Architekt → [\"AUTOCAD\", \"REVIT\", \"BIM\", \"PROJEKTANT\", \"STAVEBNÍ ARCHITEKT\"]\n"
+    "  • Elektrikář (slaboproud) → [\"VYHLÁŠKA_50\", \"SCHÉMATA\", \"MULTIMETR\", \"ELEKTROTECHNIK\", \"TECHNIK SLABOPROUD\"]\n"
+    "  Tagy uváděj VELKÝMI písmeny, odlišuj slova podtržítkem nebo mezerou; řiď se oborem pozice."
 )
 
 
