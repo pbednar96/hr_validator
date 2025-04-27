@@ -7,7 +7,7 @@ import pdfplumber
 import openai
 
 
-DEFAULT_MODEL = "gpt-4.1-mini"  # Adjust if different suffix when generally available
+DEFAULT_MODEL = "gpt-4.1"  # Adjust if different suffix when generally available
 
 
 SYSTEM_MESSAGE = (
