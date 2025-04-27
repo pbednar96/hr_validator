@@ -69,6 +69,8 @@ def _call_openai(
         model=model,
         messages=messages,
         response_format={"type": "json_object"},
+        temperature=0.65,
+        top_p=0.9
     )
     return json.loads(response.choices[0].message.content)
 
